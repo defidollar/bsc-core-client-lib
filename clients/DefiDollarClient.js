@@ -1,8 +1,8 @@
 const Web3 = require("web3");
 
 const IERC20 = require("../artifacts/ERC20Detailed.json");
-const IPeak = require("../artifacts/YVaultPeak.json");
-const zap = require("../artifacts/YVaultZap.json");
+const IPeak = require("../artifacts/NervePeak.json");
+const zap = require("../artifacts/NerveZap.json");
 const Core = require("../artifacts/Core.json");
 
 const utils = require("./utils");
@@ -13,13 +13,14 @@ const { toBN, toWei } = utils;
 
 class DefiDollarClient extends ClientBase {
   constructor(web3, config) {
+    super(config);
     web3 = web3 || new Web3();
     this.web3Client = new Web3Client(web3);
     this.config = config;
-    this.yVaultPeak = this.config.contracts.peaks.yVaultPeak;
+    this.NervePeak = this.config.contracts.peaks.NervePeak;
     this.IERC20 = new web3.eth.Contract(IERC20.abi);
-    this.peak = new web3.eth.Contract(IPeak.abi, this.yVaultPeak.address);
-    this.zap = new web3.eth.Contract(zap.abi, this.yVaultPeak.zap);
+    this.peak = new web3.eth.Contract(IPeak.abi, this.NervePeak.address);
+    this.zap = new web3.eth.Contract(zap.abi, this.NervePeak.zap);
     this.core = new web3.eth.Contract(Core.abi, config.contracts.base);
   }
 
@@ -81,7 +82,7 @@ class DefiDollarClient extends ClientBase {
     dusdAmount = toWei(dusdAmount);
     if (Object.keys(tokens).length === 1) {
       const c = Object.keys(tokens)[0];
-      const index = this.yVaultPeak.coins.findIndex((key) => key === c);
+      const index = this.NervePeak.coins.findIndex((key) => key === c);
       txObject = this.zap.methods.redeemInSingleCoin(
         dusdAmount,
         index,
@@ -108,9 +109,9 @@ class DefiDollarClient extends ClientBase {
     if (!token) {
       // all tokens
       txObject = this.zap.methods.calcRedeem(dusdAmount);
-    } else if (this.yVaultPeak.coins.includes(token)) {
+    } else if (this.NervePeak.coins.includes(token)) {
       // single stablecoin
-      const index = this.yVaultPeak.coins.findIndex((key) => key === token);
+      const index = this.NervePeak.coins.findIndex((key) => key === token);
       txObject = this.zap.methods.calcRedeemInSingleCoin(dusdAmount, index);
     } else {
       throw new Error(`Invalid token id ${token} in calcExpectedRedeemAmount`);
@@ -121,7 +122,7 @@ class DefiDollarClient extends ClientBase {
 
   async ceiling() {
     let { ceiling, amount } = await this.core.methods
-      .peaks(this.config.contracts.peaks.yVaultPeak.address)
+      .peaks(this.config.contracts.peaks.NervePeak.address)
       .call();
     ceiling = toBN(ceiling);
     amount = toBN(amount);

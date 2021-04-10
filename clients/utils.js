@@ -1,23 +1,26 @@
-const Web3 = require('web3')
+const Web3 = require("web3");
 
-const toBN = Web3.utils.toBN
-const toWei = Web3.utils.toWei
-const fromWei = Web3.utils.fromWei
+const toBN = Web3.utils.toBN;
+const toWei = Web3.utils.toWei;
+const fromWei = Web3.utils.fromWei;
+
+const TEN_THOUSAND = toBN(10000);
 
 function scale(num, decimals) {
-    num = toBN(toWei(num.toString()))
-    if (decimals < 18) {
-        num = num.div(toBN(10).pow(toBN(18 - decimals)))
-    } else if (decimals > 18) {
-        num = num.mul(toBN(10).pow(toBN(decimals - 18)))
-    }
-    return num
+  num = toBN(toWei(num.toString()));
+  if (decimals < 18) {
+    num = num.div(toBN(10).pow(toBN(18 - decimals)));
+  } else if (decimals > 18) {
+    num = num.mul(toBN(10).pow(toBN(decimals - 18)));
+  }
+  return num;
 }
 
 module.exports = {
-    scale,
-    toWei,
-    toBN,
-    fromWei,
-    ZEROAddress: '0x0000000000000000000000000000000000000000'
-}
+  scale,
+  toWei,
+  toBN,
+  fromWei,
+  TEN_THOUSAND,
+  ZEROAddress: "0x0000000000000000000000000000000000000000",
+};

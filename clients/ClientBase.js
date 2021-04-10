@@ -1,14 +1,13 @@
 const assert = require("assert").strict;
-const Web3 = require("web3");
 
-const toBN = Web3.utils.toBN;
-const toWei = Web3.utils.toWei;
-const TEN_THOUSAND = toBN(10000);
+const utils = require("./utils");
+
+const { toBN, toWei, TEN_THOUSAND } = utils;
 
 class ClientBase {
   constructor(config) {
     this.config = config;
-    this.yVaultPeak = config.contracts.peaks.yVaultPeak;
+    this.NervePeak = config.contracts.peaks.NervePeak;
   }
 
   adjustForSlippage(amount, decimals, slippage) {
@@ -16,7 +15,7 @@ class ClientBase {
     if (isNaN(slippage) || slippage < 0 || slippage > 100) {
       throw new Error(`Invalid slippage value: ${slippage} provided`);
     }
-    amount = decimals ? this.scale(amount, decimals) : toBN(amount);
+    amount = decimals ? utils.scale(amount, decimals) : toBN(amount);
     if (amount.eq(toBN(0)) || slippage == 0) return amount.toString();
     return toBN(amount)
       .mul(TEN_THOUSAND.sub(toBN(parseFloat(slippage) * 100)))
@@ -24,28 +23,17 @@ class ClientBase {
       .toString();
   }
 
-  scale(num, decimals) {
-    num = toBN(toWei(num.toString()));
-    if (decimals < 18) {
-      num = num.div(toBN(10).pow(toBN(18 - decimals)));
-    } else if (decimals > 18) {
-      num = num.mul(toBN(10).pow(toBN(decimals - 18)));
-    }
-    return num;
-  }
-
   _processAmounts(tokens) {
     Object.keys(tokens).forEach((t) =>
-      assert.ok(this.yVaultPeak.coins.includes(t), "bad coins")
+      assert.ok(this.NervePeak.coins.includes(t), "bad coins")
     );
-    const inAmounts = new Array(4);
-    for (let i = 0; i < this.yVaultPeak.coins.length; i++) {
-      const c = this.yVaultPeak.coins[i];
+    const inAmounts = new Array(3);
+    for (let i = 0; i < this.NervePeak.coins.length; i++) {
+      const c = this.NervePeak.coins[i];
       if (tokens[c]) {
-        inAmounts[i] = this.scale(
-          tokens[c],
-          this.config.contracts.tokens[c].decimals
-        ).toString();
+        inAmounts[i] = utils
+          .scale(tokens[c], this.config.contracts.tokens[c].decimals)
+          .toString();
       } else {
         inAmounts[i] = 0;
       }

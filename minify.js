@@ -2,8 +2,8 @@ const fs = require("fs");
 
 const contracts = [
   "ERC20Detailed.json",
-  "YVaultPeak.json",
-  "YVaultZap.json",
+  "NervePeak.json",
+  "NerveZap.json",
   "Core.json",
   "ibDUSD.json",
 ];

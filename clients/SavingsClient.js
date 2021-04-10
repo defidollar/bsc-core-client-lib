@@ -1,6 +1,6 @@
 const Web3 = require("web3");
 
-const zap = require("../artifacts/YVaultZap.json");
+const zap = require("../artifacts/NerveZap.json");
 const ibDUSD = require("../artifacts/ibDUSD.json");
 const IERC20 = require("../artifacts/ERC20Detailed.json");
 
@@ -25,7 +25,7 @@ class SavingsClient extends ClientBase {
     );
     this.zap = new web3.eth.Contract(
       zap.abi,
-      this.config.contracts.peaks.yVaultPeak.zap
+      this.config.contracts.peaks.NervePeak.zap
     );
   }
 
