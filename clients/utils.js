@@ -2,7 +2,7 @@ const Web3 = require("web3");
 
 const toBN = Web3.utils.toBN;
 const toWei = Web3.utils.toWei;
-const fromWei = Web3.utils.fromWei;
+const _1e18 = toBN(10).pow(toBN(18));
 
 const TEN_THOUSAND = toBN(10000);
 
@@ -20,7 +20,7 @@ module.exports = {
   scale,
   toWei,
   toBN,
-  fromWei,
+  _1e18,
   TEN_THOUSAND,
   ZEROAddress: "0x0000000000000000000000000000000000000000",
 };

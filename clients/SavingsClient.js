@@ -8,7 +8,7 @@ const utils = require("./utils");
 const Web3Client = require("./Web3Client");
 const ClientBase = require("./ClientBase.js");
 
-const { toBN, toWei, fromWei } = utils;
+const { toBN, toWei, _1e18 } = utils;
 
 class SavingsClient extends ClientBase {
   constructor(web3, config) {
@@ -92,7 +92,7 @@ class SavingsClient extends ClientBase {
     ]);
     return {
       ibDusd,
-      withdrawable: fromWei(toBN(ibDusd).mul(toBN(pricePerFullShare))),
+      withdrawable: toBN(ibDusd).mul(toBN(pricePerFullShare)).div(_1e18),
       dusd,
     };
   }
